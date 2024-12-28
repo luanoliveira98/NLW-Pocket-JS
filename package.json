@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx --env-file .env watch src/http/server.ts",
+    "dev": "tsx watch --env-file .env src/http/server.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
@@ -25,6 +25,7 @@
     "dayjs": "^1.11.13",
     "drizzle-orm": "^0.38.3",
     "fastify": "^5.2.0",
+    "fastify-type-provider-zod": "^4.0.2",
     "postgres": "^3.4.5",
     "zod": "^3.24.1"
   }
