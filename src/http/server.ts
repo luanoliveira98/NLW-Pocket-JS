@@ -1,60 +1,21 @@
 import fastify from 'fastify'
-import { createGoalUseCase } from '../use-cases/create-goal.use-case'
-import z from 'zod'
 import {
   serializerCompiler,
   validatorCompiler,
   type ZodTypeProvider,
 } from 'fastify-type-provider-zod'
-import { getWeekPendingGoalsUseCase } from '../use-cases/get-weekly-pending-goals.use-case'
-import { CreateGoalCompletionUseCase } from '../use-cases/create-goal-completion.use-case'
+import { createGoalRoute } from './routes/create-goal.route'
+import { createCompletionRoute } from './routes/create-completion.route'
+import { getPendingGoalsRoute } from './routes/get-pending-goals.route'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
 app.setValidatorCompiler(validatorCompiler)
 app.setSerializerCompiler(serializerCompiler)
 
-app.get('/pending-goals', () => {
-  return getWeekPendingGoalsUseCase()
-})
-
-app.post(
-  '/goals',
-  {
-    schema: {
-      body: z.object({
-        title: z.string(),
-        desiredWeeklyFrequency: z.number().int().min(1).max(7),
-      }),
-    },
-  },
-  async request => {
-    const { title, desiredWeeklyFrequency } = request.body
-
-    await createGoalUseCase({
-      title,
-      desiredWeeklyFrequency,
-    })
-  }
-)
-
-app.post(
-  '/completions',
-  {
-    schema: {
-      body: z.object({
-        goalId: z.string(),
-      }),
-    },
-  },
-  async request => {
-    const { goalId } = request.body
-
-    await CreateGoalCompletionUseCase({
-      goalId,
-    })
-  }
-)
+app.register(createGoalRoute)
+app.register(createCompletionRoute)
+app.register(getPendingGoalsRoute)
 
 app
   .listen({
