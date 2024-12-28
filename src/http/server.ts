@@ -6,11 +6,16 @@ import {
   validatorCompiler,
   type ZodTypeProvider,
 } from 'fastify-type-provider-zod'
+import { getWeekPendingGoalsUseCase } from '../use-cases/get-weekly-pending-goals.use-case'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
 app.setValidatorCompiler(validatorCompiler)
 app.setSerializerCompiler(serializerCompiler)
+
+app.get('/pending-goals', () => {
+  return getWeekPendingGoalsUseCase()
+})
 
 app.post(
   '/goals',
